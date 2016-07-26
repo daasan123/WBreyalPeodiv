@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreGraphics/CoreGraphics.h>
+//#import "WBVPLog.h"
 
 // 帧数据类型
 typedef NS_ENUM(NSUInteger, WBMediaFrameType)
