@@ -41,6 +41,9 @@
     NSArray             *_audioStreams;
     NSArray             *_subtitleStreams;
     
+    CGFloat             _videoTimeBase;
+    CGFloat             _audioTimeBase;
+    
     AVPicture           _picture;
     BOOL                _pictureValid;
     struct SwsContext   *_swsContext;
@@ -52,6 +55,48 @@
     WBVideoFrameFormat  _videoFrameFormat;
     NSUInteger          _artworkStream;
     NSInteger           _subtitleASSEvents;
+}
+
+static NSData * copyFrameData(UInt8 *src, int linesize, int width, int height)
+{
+    width = MIN(linesize, width);
+    NSMutableData *md = [NSMutableData dataWithLength: width * height];
+    Byte *dst = md.mutableBytes;
+    for (NSUInteger i = 0; i < height; ++i) {
+        memcpy(dst, src, width);
+        dst += width;
+        src += linesize;
+    }
+    return md;
+}
+
+static void avStreamFPSTimeBase(AVStream *st, CGFloat defaultTimeBase, CGFloat *pFPS, CGFloat *pTimeBase)
+{
+    CGFloat fps, timebase;
+    
+    if (st->time_base.den && st->time_base.num)
+        timebase = av_q2d(st->time_base);
+    else if(st->codec->time_base.den && st->codec->time_base.num)
+        timebase = av_q2d(st->codec->time_base);
+    else
+        timebase = defaultTimeBase;
+    
+    if (st->codec->ticks_per_frame != 1) {
+        WBVPLog(@"WARNING: st.codec.ticks_per_frame=%d", st->codec->ticks_per_frame);
+        //timebase *= st->codec->ticks_per_frame;
+    }
+    
+    if (st->avg_frame_rate.den && st->avg_frame_rate.num)
+        fps = av_q2d(st->avg_frame_rate);
+    else if (st->r_frame_rate.den && st->r_frame_rate.num)
+        fps = av_q2d(st->r_frame_rate);
+    else
+        fps = 1.0 / timebase;
+    
+    if (pFPS)
+        *pFPS = fps;
+    if (pTimeBase)
+        *pTimeBase = timebase;
 }
 
 - (BOOL)interruptDecoder
@@ -95,22 +140,23 @@ static int interrupt_callback(void *ctx)
     [self close];
 }
 
-- (BOOL)openVideo:(NSString *)url error:(NSError **)error
+- (NSError *)openVideo:(NSString *)url;
 {
     if (!url)
     {
         WBVPLog(@"open video failed: url nil");
-        return NO;
+        return mediaErrorWithCode(kxMoveiErrorBadUrl);
     }
     
     if (_formatCtx)
     {
         WBVPLog(@"video already opened");
-        return YES;
+        return nil;
     }
     
+    
+    _isNetwork = isNetworkPath(url);
     /*
-    BOOL isNetwork = isNetworkPath(url);
     // 网络初始化
     static BOOL needNetworkInit = YES;
     if (needNetworkInit && isNetwork)
@@ -121,8 +167,10 @@ static int interrupt_callback(void *ctx)
     
     _path = url;
     
+    // 获取上下文
     kxMovieError errCode = [self openInput: _path];
     
+    // 打开流
     if (errCode == kxMovieErrorNone)
     {
         kxMovieError videoErr = [self openVideoStream];
@@ -137,30 +185,105 @@ static int interrupt_callback(void *ctx)
             
         } else {
             
-            _subtitleStreams = collectStreams(_formatCtx, AVMEDIA_TYPE_SUBTITLE);
+            _subtitleStreams = [self collectStreams:_formatCtx forMediaType:AVMEDIA_TYPE_SUBTITLE];
         }
 
     }
-    else
+    // 报错
+    if (errCode != kxMovieErrorNone)
     {
         [self close];
-        NSString *errMsg = errorMessage(errCode);
-        WBVPLog(@"%@, %@", errMsg, _path.lastPathComponent);
-        if (error)
-        {
-            *error = kxmovieError(errCode, errMsg);
-        }
-        return NO;
+        return mediaErrorWithCode(errCode);
     }
+    
+    return nil;
+}
 
-    return YES;
+- (NSArray *)collectStreams:(AVFormatContext *)formatCtx forMediaType:(enum AVMediaType)mediaType
+{
+    NSMutableArray *streamIndexArray = [NSMutableArray array];
+    for (NSInteger i = 0; i < formatCtx->nb_streams; i++)
+    {
+        if (mediaType == formatCtx->streams[i]->codec->codec_type)
+        {
+            [streamIndexArray addObject:@(i)];
+        }
+    }
+    return streamIndexArray;
 }
 
 - (kxMovieError) openVideoStream
 {
-    return 0;
+    kxMovieError errCode = kxMovieErrorStreamNotFound;
+    _videoStream = -1;
+    _artworkStream = -1;
+    _videoStreams = [self collectStreams:_formatCtx forMediaType:AVMEDIA_TYPE_VIDEO];
+    for (NSNumber *videoIndex in _videoStreams)
+    {
+        NSInteger videoIndexInt = videoIndex.integerValue;
+        // ?
+        if (0 == (_formatCtx->streams[videoIndexInt]->disposition & AV_DISPOSITION_ATTACHED_PIC))
+        {
+            _videoStream = videoIndexInt;
+            errCode = [self openVideoStreamWithIndex:_videoStream];
+            if (kxMovieErrorNone == errCode)
+            {
+                break;
+            }
+        }
+        else
+        {
+            _artworkStream = videoIndexInt;
+        }
+    }
+    return errCode;
 }
 
+- (kxMovieError)openVideoStreamWithIndex:(NSUInteger)videoStream
+{
+    // get a pointer to the codec context for the video stream
+    AVCodecContext *codecCtx = _formatCtx->streams[videoStream]->codec;
+    
+    // find the decoder for the video stream
+    AVCodec *codec = avcodec_find_decoder(codecCtx->codec_id);
+    if (!codec)
+        return kxMovieErrorCodecNotFound;
+    
+    // inform the codec that we can handle truncated bitstreams -- i.e.,
+    // bitstreams where frame boundaries can fall in the middle of packets
+    //if(codec->capabilities & CODEC_CAP_TRUNCATED)
+    //    _codecCtx->flags |= CODEC_FLAG_TRUNCATED;
+    
+    // open codec
+    if (avcodec_open2(codecCtx, codec, NULL) < 0)
+        return kxMovieErrorOpenCodec;
+    
+    _videoFrame = av_frame_alloc();
+    
+    if (!_videoFrame) {
+        avcodec_close(codecCtx);
+        return kxMovieErrorAllocateFrame;
+    }
+    
+    _videoStream = videoStream;
+    _videoCodecCtx = codecCtx;
+    
+    // determine fps
+    
+    AVStream *st = _formatCtx->streams[_videoStream];
+    avStreamFPSTimeBase(st, 0.04, &_fps, &_videoTimeBase);
+    
+    WBVPLog(@"video codec size: %zd:%zd fps: %.3f tb: %f",
+            self.frameWidth,
+            self.frameHeight,
+            _fps,
+            _videoTimeBase);
+    
+    WBVPLog(@"video start time %f", st->start_time * _videoTimeBase);
+    WBVPLog(@"video disposition %d", st->disposition);
+    
+    return kxMovieErrorNone;
+}
 - (kxMovieError) openAudioStream
 {
     return 0;
@@ -196,6 +319,278 @@ static int interrupt_callback(void *ctx)
     
     _formatCtx = formatCtx;
     return kxMovieErrorNone;
+}
+
+- (BOOL) setupScaler
+{
+    [self closeScaler];
+    
+    _pictureValid = avpicture_alloc(&_picture,
+                                    PIX_FMT_RGB24,
+                                    _videoCodecCtx->width,
+                                    _videoCodecCtx->height) == 0;
+    
+    if (!_pictureValid)
+        return NO;
+    
+    _swsContext = sws_getCachedContext(_swsContext,
+                                       _videoCodecCtx->width,
+                                       _videoCodecCtx->height,
+                                       _videoCodecCtx->pix_fmt,
+                                       _videoCodecCtx->width,
+                                       _videoCodecCtx->height,
+                                       PIX_FMT_RGB24,
+                                       SWS_FAST_BILINEAR,
+                                       NULL, NULL, NULL);
+    
+    return _swsContext != NULL;
+}
+
+- (WBVideoFrame *) handleVideoFrame
+{
+    if (!_videoFrame->data[0])
+        return nil;
+    
+    WBVideoFrame *frame;
+    
+    if (_videoFrameFormat == kWBVideoFrameFormatYUV) {
+        
+        WBVideoFrameYUV * yuvFrame = [[WBVideoFrameYUV alloc] init];
+        
+        yuvFrame.luma = copyFrameData(_videoFrame->data[0],
+                                      _videoFrame->linesize[0],
+                                      _videoCodecCtx->width,
+                                      _videoCodecCtx->height);
+        
+        yuvFrame.chromaB = copyFrameData(_videoFrame->data[1],
+                                         _videoFrame->linesize[1],
+                                         _videoCodecCtx->width / 2,
+                                         _videoCodecCtx->height / 2);
+        
+        yuvFrame.chromaR = copyFrameData(_videoFrame->data[2],
+                                         _videoFrame->linesize[2],
+                                         _videoCodecCtx->width / 2,
+                                         _videoCodecCtx->height / 2);
+        
+        frame = yuvFrame;
+        
+    } else {
+        
+        if (!_swsContext &&
+            ![self setupScaler]) {
+            
+            WBVPLog(@"fail setup video scaler");
+            return nil;
+        }
+        
+        sws_scale(_swsContext,
+                  (const uint8_t **)_videoFrame->data,
+                  _videoFrame->linesize,
+                  0,
+                  _videoCodecCtx->height,
+                  _picture.data,
+                  _picture.linesize);
+        
+        
+        WBVideoFrameRGB *rgbFrame = [[WBVideoFrameRGB alloc] init];
+        
+        rgbFrame.linesize = _picture.linesize[0];
+        rgbFrame.rgb = [NSData dataWithBytes:_picture.data[0]
+                                      length:rgbFrame.linesize * _videoCodecCtx->height];
+        frame = rgbFrame;
+    }
+    
+    frame.width = _videoCodecCtx->width;
+    frame.height = _videoCodecCtx->height;
+    frame.position = av_frame_get_best_effort_timestamp(_videoFrame) * _videoTimeBase;
+    
+    const int64_t frameDuration = av_frame_get_pkt_duration(_videoFrame);
+    if (frameDuration) {
+        
+        frame.duration = frameDuration * _videoTimeBase;
+        frame.duration += _videoFrame->repeat_pict * _videoTimeBase * 0.5;
+        
+        //if (_videoFrame->repeat_pict > 0) {
+        //    LoggerVideo(0, @"_videoFrame.repeat_pict %d", _videoFrame->repeat_pict);
+        //}
+        
+    } else {
+        
+        // sometimes, ffmpeg unable to determine a frame duration
+        // as example yuvj420p stream from web camera
+        frame.duration = 1.0 / _fps;
+    }
+    
+#if 0
+    LoggerVideo(2, @"VFD: %.4f %.4f | %lld ",
+                frame.position,
+                frame.duration,
+                av_frame_get_pkt_pos(_videoFrame));
+#endif
+    
+    return frame;
+}
+
+- (NSArray *)decodeFrames:(CGFloat)minDuration
+{
+    if ((_videoStream == -1 && _audioStream == -1) || _isDecoding)
+    {
+        return nil;
+    }
+    
+    NSMutableArray *result = [NSMutableArray array];
+    
+    AVPacket packet;
+    
+    CGFloat decodedDuration = 0;
+    
+    BOOL finished = NO;
+    _isDecoding = YES;
+    
+    while (!finished) {
+        
+        if (av_read_frame(_formatCtx, &packet) < 0) {
+            _isEOF = YES;
+            break;
+        }
+        
+        if (packet.stream_index ==_videoStream) {
+            
+            int pktSize = packet.size;
+            
+            while (pktSize > 0) {
+                
+                int gotframe = 0;
+                int len = avcodec_decode_video2(_videoCodecCtx,
+                                                _videoFrame,
+                                                &gotframe,
+                                                &packet);
+                
+                if (len < 0) {
+                    WBVPLog(@"decode video error, skip packet");
+                    break;
+                }
+                
+                if (gotframe) {
+                    
+                    if (!_disableDeinterlacing &&
+                        _videoFrame->interlaced_frame) {
+                        
+                        avpicture_deinterlace((AVPicture*)_videoFrame,
+                                              (AVPicture*)_videoFrame,
+                                              _videoCodecCtx->pix_fmt,
+                                              _videoCodecCtx->width,
+                                              _videoCodecCtx->height);
+                    }
+                    
+                    WBVideoFrame *frame = [self handleVideoFrame];
+                    if (frame) {
+                        
+                        [result addObject:frame];
+                        
+                        _position = frame.position;
+                        decodedDuration += frame.duration;
+                        if (decodedDuration > minDuration)
+                            finished = YES;
+                    }
+                }
+                
+                if (0 == len)
+                    break;
+                
+                pktSize -= len;
+            }
+            
+        }
+        /*
+        else if (packet.stream_index == _audioStream) {
+            
+            int pktSize = packet.size;
+            
+            while (pktSize > 0) {
+                
+                int gotframe = 0;
+                int len = avcodec_decode_audio4(_audioCodecCtx,
+                                                _audioFrame,
+                                                &gotframe,
+                                                &packet);
+                
+                if (len < 0) {
+                    WBVPLog(@"decode audio error, skip packet");
+                    break;
+                }
+                
+                if (gotframe) {
+                    
+                    WBAudioFrame * frame = [self handleAudioFrame];
+                    if (frame) {
+                        
+                        [result addObject:frame];
+                        
+                        if (_videoStream == -1) {
+                            
+                            _position = frame.position;
+                            decodedDuration += frame.duration;
+                            if (decodedDuration > minDuration)
+                                finished = YES;
+                        }
+                    }
+                }
+                
+                if (0 == len)
+                    break;
+                
+                pktSize -= len;
+            }
+            
+        } else if (packet.stream_index == _artworkStream) {
+            
+            if (packet.size) {
+                
+                KxArtworkFrame *frame = [[KxArtworkFrame alloc] init];
+                frame.picture = [NSData dataWithBytes:packet.data length:packet.size];
+                [result addObject:frame];
+            }
+            
+        } else if (packet.stream_index == _subtitleStream) {
+            
+            int pktSize = packet.size;
+            
+            while (pktSize > 0) {
+                
+                AVSubtitle subtitle;
+                int gotsubtitle = 0;
+                int len = avcodec_decode_subtitle2(_subtitleCodecCtx,
+                                                   &subtitle,
+                                                   &gotsubtitle,
+                                                   &packet);
+                
+                if (len < 0) {
+                    LoggerStream(0, @"decode subtitle error, skip packet");
+                    break;
+                }
+                
+                if (gotsubtitle) {
+                    
+                    KxSubtitleFrame *frame = [self handleSubtitle: &subtitle];
+                    if (frame) {
+                        [result addObject:frame];
+                    }
+                    avsubtitle_free(&subtitle);
+                }
+                
+                if (0 == len)
+                    break;
+                
+                pktSize -= len;
+            }
+        }
+         */
+        
+        av_free_packet(&packet);
+    }
+    _isDecoding = NO;
+    return result;
 }
 
 -(void) close

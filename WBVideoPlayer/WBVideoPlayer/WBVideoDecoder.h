@@ -15,6 +15,7 @@ typedef BOOL(^WBVideoDecoderInterruptCallback)();
 @interface WBVideoDecoder : NSObject
 @property (readonly, nonatomic, strong) NSString *path;
 @property (readonly, nonatomic) BOOL isEOF;
+@property (readonly, nonatomic) BOOL isDecoding;
 @property (readwrite,nonatomic) CGFloat position;
 @property (readonly, nonatomic) CGFloat duration;
 @property (readonly, nonatomic) CGFloat fps;
@@ -30,8 +31,11 @@ typedef BOOL(^WBVideoDecoderInterruptCallback)();
 @property (readonly, nonatomic) BOOL validSubtitles;
 @property (readonly, nonatomic, strong) NSDictionary *info;
 @property (readonly, nonatomic, strong) NSString *videoStreamFormatName;
-//@property (readonly, nonatomic) BOOL isNetwork;
+@property (readonly, nonatomic) BOOL isNetwork;
 @property (readonly, nonatomic) CGFloat startTime;
 @property (readwrite, nonatomic) BOOL disableDeinterlacing;
 @property (readwrite, nonatomic, strong) WBVideoDecoderInterruptCallback interruptCallback;
+
+- (NSError *)openVideo:(NSString *)url;
+- (NSArray *)decodeFrames:(CGFloat)minDuration;
 @end

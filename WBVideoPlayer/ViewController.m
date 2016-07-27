@@ -8,8 +8,12 @@
 
 #import "ViewController.h"
 
-@interface ViewController ()
+#import "WBVideoPlayer.h"
 
+@interface ViewController ()<WBVideoPlayerDelegate>
+{
+    WBVideoPlayer *player;
+}
 @end
 
 @implementation ViewController
@@ -17,7 +21,23 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    NSString *url = @"http://bst.mobile.live.bestvcdn.com.cn/live/program/live991/weixincctv1hd/live.m3u8?se=weixin&ct=1&_fk=65F79F8F78CF053FDFEAC4E3372A4C036671C0A8C3EEC2D8F0B916E5E3181B1F";
+    
+    
+    player = [[WBVideoPlayer alloc] init];
+    player.delegate = self;
+    [player prepareToPlayWithUrl:url];
+    
     // Do any additional setup after loading the view, typically from a nib.
+}
+
+- (void)wbVideoPlayerCallbackWithEvent:(WBVideoPlayerEvent)event
+{
+    NSLog(@"event:%zd", event);
+    if (event == kWBVideoPlayerEventPrepared)
+    {
+        [player resume];
+    }
 }
 
 - (void)didReceiveMemoryWarning {

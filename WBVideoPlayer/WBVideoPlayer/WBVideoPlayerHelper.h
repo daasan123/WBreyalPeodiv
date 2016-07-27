@@ -14,6 +14,7 @@
 typedef enum {
     
     kxMovieErrorNone,
+    kxMoveiErrorBadUrl,
     kxMovieErrorOpenFile,
     kxMovieErrorStreamInfoNotFound,
     kxMovieErrorStreamNotFound,
@@ -33,7 +34,8 @@ static NSString * errorMessage (kxMovieError errorCode)
     switch (errorCode) {
         case kxMovieErrorNone:
             return @"";
-            
+        case kxMoveiErrorBadUrl:
+            return NSLocalizedString(@"bad url", nil);
         case kxMovieErrorOpenFile:
             return NSLocalizedString(@"Unable to open file", nil);
             
@@ -79,6 +81,11 @@ static NSError * kxmovieError (NSInteger code, id info)
     return [NSError errorWithDomain:@"com.wubing.WBVideoPlayer"
                                code:code
                            userInfo:userInfo];
+}
+
+static NSError * mediaErrorWithCode(kxMovieError errorCode)
+{
+    return kxmovieError(errorCode, errorMessage(errorCode));
 }
 
 #pragma mark - Utility

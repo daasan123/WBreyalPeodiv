@@ -25,9 +25,9 @@ typedef NS_ENUM(NSUInteger, WBMediaFrameType)
  *  帧数据基类
  */
 @interface WBMediaFrame : NSObject
-@property (readonly, nonatomic) WBMediaFrameType type;
-@property (readonly, nonatomic) CGFloat position;
-@property (readonly, nonatomic) CGFloat duration;
+@property (nonatomic, assign) WBMediaFrameType type;
+@property (nonatomic, assign) CGFloat position;
+@property (nonatomic, assign) CGFloat duration;
 @end
 
 

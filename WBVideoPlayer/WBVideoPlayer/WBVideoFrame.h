@@ -20,17 +20,17 @@ typedef NS_ENUM(NSUInteger, WBVideoFrameFormat)
  *  视频帧
  */
 @interface WBVideoFrame : WBMediaFrame
-@property (readonly, nonatomic) WBVideoFrameFormat format;
-@property (readonly, nonatomic) NSUInteger width;
-@property (readonly, nonatomic) NSUInteger height;
+@property (nonatomic, assign) WBVideoFrameFormat format;
+@property (nonatomic, assign) NSUInteger width;
+@property (nonatomic, assign) NSUInteger height;
 @end
 
 /**
  *  RGB
  */
 @interface WBVideoFrameRGB : WBVideoFrame
-@property (readonly, nonatomic) NSUInteger linesize;
-@property (readonly, nonatomic, strong) NSData *rgb;
+@property (nonatomic, assign) NSUInteger linesize;
+@property (nonatomic, strong) NSData *rgb;
 - (UIImage *)asImage;
 @end
 
@@ -38,7 +38,7 @@ typedef NS_ENUM(NSUInteger, WBVideoFrameFormat)
  *  YUV
  */
 @interface WBVideoFrameYUV : WBVideoFrame
-@property (readonly, nonatomic, strong) NSData *luma;
-@property (readonly, nonatomic, strong) NSData *chromaB;
-@property (readonly, nonatomic, strong) NSData *chromaR;
+@property (nonatomic, strong) NSData *luma;
+@property (nonatomic, strong) NSData *chromaB;
+@property (nonatomic, strong) NSData *chromaR;
 @end
