@@ -21,7 +21,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    NSString *url = @"http://bst.mobile.live.bestvcdn.com.cn/live/program/live991/weixincctv1hd/live.m3u8?se=weixin&ct=1&_fk=65F79F8F78CF053FDFEAC4E3372A4C036671C0A8C3EEC2D8F0B916E5E3181B1F";
+    NSString *url = @"http://127.0.0.1/video/1.mp4";
     
     
     player = [[WBVideoPlayer alloc] init];

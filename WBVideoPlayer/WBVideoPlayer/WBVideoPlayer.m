@@ -61,7 +61,7 @@
     }
     dispatch_async(_taskQueue, ^{
         const CGFloat duration = _decoder.isNetwork ? .0f : 0.1f;
-        [_decoder decodeFrames:duration];
+        NSArray *frames = [_decoder decodeFrames:duration];
     });
 }
                    
