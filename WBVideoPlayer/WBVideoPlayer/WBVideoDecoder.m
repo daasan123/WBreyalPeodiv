@@ -13,14 +13,7 @@
 #include "libswresample/swresample.h"
 #include "libavutil/pixdesc.h"
 
-#import "WBVideoFrame.h"
-#import "WBAudioFrame.h"
-#import "WBArtworkFrame.h"
-#import "WBSubTitleFrame.h"
-
 #import "WBVideoPlayerHelper.h"
-
-
 
 @implementation WBVideoDecoder
 {
@@ -124,6 +117,75 @@ static int interrupt_callback(void *ctx)
         WBVPLog(@"DEBUG: INTERRUPT_CALLBACK!");
     }
     return r;
+}
+
+#pragma mark - Getters and Setters
+
+- (CGFloat)duration
+{
+    if (!_formatCtx)
+        return 0;
+    if (_formatCtx->duration == AV_NOPTS_VALUE)
+        return MAXFLOAT;
+    return (CGFloat)_formatCtx->duration / AV_TIME_BASE;
+}
+
+- (void)setPosition: (CGFloat)seconds
+{
+    _position = seconds;
+    _isEOF = NO;
+	   
+    if (self.validVideo) {
+        int64_t ts = (int64_t)(seconds / _videoTimeBase);
+        avformat_seek_file(_formatCtx, _videoStream, ts, ts, ts, AVSEEK_FLAG_FRAME);
+        avcodec_flush_buffers(_videoCodecCtx);
+    }
+    
+//    if (self.validAudio) {
+//        int64_t ts = (int64_t)(seconds / _audioTimeBase);
+//        avformat_seek_file(_formatCtx, _audioStream, ts, ts, ts, AVSEEK_FLAG_FRAME);
+//        avcodec_flush_buffers(_audioCodecCtx);
+//    }
+}
+
+- (NSUInteger) frameWidth
+{
+    return _videoCodecCtx ? _videoCodecCtx->width : 0;
+}
+
+- (NSUInteger) frameHeight
+{
+    return _videoCodecCtx ? _videoCodecCtx->height : 0;
+}
+
+- (CGFloat) sampleRate
+{
+    return _audioCodecCtx ? _audioCodecCtx->sample_rate : 0;
+}
+
+- (NSUInteger) audioStreamsCount
+{
+    return [_audioStreams count];
+}
+
+- (NSUInteger) subtitleStreamsCount
+{
+    return [_subtitleStreams count];
+}
+
+- (BOOL)validAudio
+{
+    return _audioStream != -1;
+}
+
+- (BOOL)validVideo
+{
+    return _videoStream != -1;
+}
+
+- (BOOL)validSubtitles
+{
+    return _subtitleStream != -1;
 }
 
 #pragma mark - LifeCycle
@@ -433,7 +495,7 @@ static int interrupt_callback(void *ctx)
 
 - (NSArray *)decodeFrames:(CGFloat)minDuration
 {
-    if ((_videoStream == -1 && _audioStream == -1) || _isDecoding)
+    if ((!self.validVideo && !self.validAudio) || _isDecoding)
     {
         return nil;
     }

@@ -8,36 +8,15 @@
 
 #import "ViewController.h"
 
-#import "WBVideoPlayer.h"
 
-@interface ViewController ()<WBVideoPlayerDelegate>
-{
-    WBVideoPlayer *player;
-}
+@interface ViewController ()
+
 @end
 
 @implementation ViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    NSString *url = @"http://127.0.0.1/video/1.mp4";
-    
-    
-    player = [[WBVideoPlayer alloc] init];
-    player.delegate = self;
-    [player prepareToPlayWithUrl:url];
-    
-    // Do any additional setup after loading the view, typically from a nib.
-}
-
-- (void)wbVideoPlayerCallbackWithEvent:(WBVideoPlayerEvent)event
-{
-    NSLog(@"event:%zd", event);
-    if (event == kWBVideoPlayerEventPrepared)
-    {
-        [player resume];
-    }
 }
 
 - (void)didReceiveMemoryWarning {

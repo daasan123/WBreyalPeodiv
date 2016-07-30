@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "WBVideoDecoder.h"
 
 typedef NS_ENUM(NSInteger, WBVideoPlayerEvent) {
     kWBVideoPlayerEventUnknwon = 0,
@@ -42,11 +43,14 @@ typedef NS_ENUM(NSInteger, WBVideoPlayerStatus) {
 @interface WBVideoPlayer : NSObject
 @property (nonatomic, assign) WBVideoPlayerStatus status;
 @property (nonatomic, weak) id <WBVideoPlayerDelegate> delegate;
+@property (nonatomic, strong) UIImageView *view;
+
+@property (nonatomic, readonly, assign) CGFloat duration;
 
 - (void)prepareToPlayWithUrl:(NSString *)url;
 
 - (void)resume;
 - (void)pause;
 - (void)stop;
-
+- (void)seekToPosition:(CGFloat)position;
 @end

@@ -27,6 +27,7 @@
 		481624BA1D476F8300A02971 /* WBArtworkFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 481624B91D476F8300A02971 /* WBArtworkFrame.m */; };
 		481624BD1D476F9B00A02971 /* WBSubTitleFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 481624BC1D476F9B00A02971 /* WBSubTitleFrame.m */; };
 		481624C01D48B4F900A02971 /* WBVideoPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 481624BF1D48B4F900A02971 /* WBVideoPlayer.m */; };
+		481625021D4C75AE00A02971 /* ViewController1.m in Sources */ = {isa = PBXBuildFile; fileRef = 481625011D4C75AE00A02971 /* ViewController1.m */; };
 		D01A6A3B1D4799F200E3ADFC /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D01A6A3A1D4799F200E3ADFC /* libz.tbd */; };
 		D01A6A3D1D479A0500E3ADFC /* libbz2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D01A6A3C1D479A0500E3ADFC /* libbz2.tbd */; };
 		D01A6A3F1D479A1400E3ADFC /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D01A6A3E1D479A1400E3ADFC /* libiconv.tbd */; };
@@ -157,6 +158,8 @@
 		481624BC1D476F9B00A02971 /* WBSubTitleFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBSubTitleFrame.m; sourceTree = "<group>"; };
 		481624BE1D48B4F900A02971 /* WBVideoPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBVideoPlayer.h; sourceTree = "<group>"; };
 		481624BF1D48B4F900A02971 /* WBVideoPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBVideoPlayer.m; sourceTree = "<group>"; };
+		481625001D4C75AE00A02971 /* ViewController1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController1.h; sourceTree = "<group>"; };
+		481625011D4C75AE00A02971 /* ViewController1.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController1.m; sourceTree = "<group>"; };
 		D01A6A391D4794CA00E3ADFC /* WBVPLog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WBVPLog.h; sourceTree = "<group>"; };
 		D01A6A3A1D4799F200E3ADFC /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		D01A6A3C1D479A0500E3ADFC /* libbz2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbz2.tbd; path = usr/lib/libbz2.tbd; sourceTree = SDKROOT; };
@@ -214,6 +217,8 @@
 				481624241D475C8F00A02971 /* AppDelegate.m */,
 				481624261D475C8F00A02971 /* ViewController.h */,
 				481624271D475C8F00A02971 /* ViewController.m */,
+				481625001D4C75AE00A02971 /* ViewController1.h */,
+				481625011D4C75AE00A02971 /* ViewController1.m */,
 				481624291D475C8F00A02971 /* Main.storyboard */,
 				4816242C1D475C8F00A02971 /* Assets.xcassets */,
 				4816242E1D475C8F00A02971 /* LaunchScreen.storyboard */,
@@ -511,6 +516,7 @@
 				481624BD1D476F9B00A02971 /* WBSubTitleFrame.m in Sources */,
 				481624AE1D475D8C00A02971 /* WBVideoDecoder.m in Sources */,
 				481624251D475C8F00A02971 /* AppDelegate.m in Sources */,
+				481625021D4C75AE00A02971 /* ViewController1.m in Sources */,
 				481624B41D476EB100A02971 /* WBVideoFrame.m in Sources */,
 				481624B71D476EC900A02971 /* WBAudioFrame.m in Sources */,
 				481624221D475C8F00A02971 /* main.m in Sources */,

@@ -9,6 +9,11 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+#import "WBVideoFrame.h"
+#import "WBAudioFrame.h"
+#import "WBArtworkFrame.h"
+#import "WBSubTitleFrame.h"
+
 typedef BOOL(^WBVideoDecoderInterruptCallback)();
 
 
@@ -38,4 +43,5 @@ typedef BOOL(^WBVideoDecoderInterruptCallback)();
 
 - (NSError *)openVideo:(NSString *)url;
 - (NSArray *)decodeFrames:(CGFloat)minDuration;
+- (void)close;
 @end
