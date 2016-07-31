@@ -42,6 +42,7 @@ typedef BOOL(^WBVideoDecoderInterruptCallback)();
 @property (readwrite, nonatomic, strong) WBVideoDecoderInterruptCallback interruptCallback;
 
 - (NSError *)openVideo:(NSString *)url;
+- (BOOL)setupVideoFrameFormat:(WBVideoFrameFormat) format;
 - (NSArray *)decodeFrames:(CGFloat)minDuration;
 - (void)close;
 @end

@@ -27,15 +27,22 @@
     imageView.backgroundColor = [UIColor blackColor];
     
     
-    NSString *url = @"http://127.0.0.1/video/1.mp4";
-    
     player = [[WBVideoPlayer alloc] init];
     player.delegate = self;
-    [player prepareToPlayWithUrl:url];
+    [player prepareToPlayWithUrl:self.url];
     
     player.view = imageView;
     
+    
+    
     // Do any additional setup after loading the view.
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(tick) object:nil];
+
 }
 
 - (void)wbVideoPlayerCallbackWithEvent:(WBVideoPlayerEvent)event
@@ -50,7 +57,18 @@
         slider.maximumValue = player.duration;
         
         [player resume];
+        
+        [self performSelector:@selector(tick) withObject:nil afterDelay:1.0];
     }
+}
+
+- (void)tick
+{
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(tick) object:nil];
+    slider.value = player.position;
+    positionLabel.text = [NSString stringWithFormat:@"%lf", slider.value];
+    [self performSelector:@selector(tick) withObject:nil afterDelay:1.0];
+    NSLog(@"position:%lf", slider.value);
 }
 
 - (void)dealloc

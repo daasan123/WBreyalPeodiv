@@ -22,16 +22,17 @@
     BOOL                _isDecoding;
 }
 
+#pragma mark - LifeCycle
 - (instancetype)init
 {
     self = [super init];
     if (self)
     {
-        _taskQueue  = dispatch_queue_create("KxMovie", DISPATCH_QUEUE_SERIAL);
+        _taskQueue  = dispatch_queue_create("DecodeQueue", DISPATCH_QUEUE_SERIAL);
         _videoFrames = [[NSMutableArray alloc] init];
         
         _minBufferedDuration = 2;
-        _maxBufferedDuration = 4;
+        _maxBufferedDuration = 8;
 
     }
     return self;
@@ -108,7 +109,7 @@
                 {
                     [_videoFrames addObject:frame];
                     _bufferedDuration += frame.duration;
-                    NSLog(@"bufferdDuration1:%lf", _bufferedDuration);
+                    //NSLog(@"bufferdDuration1:%lf", _bufferedDuration);
 
                 }
             }
@@ -126,6 +127,9 @@
     }
      _status = kWBVideoPlayerStatusPlaying;
     
+    // test
+     [_decoder setupVideoFrameFormat:kWBVideoFrameFormatRGB];
+    
     [self decodeFrame];
     
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 0.1 * NSEC_PER_SEC);
@@ -142,13 +146,19 @@
         if (_videoFrames.count > 0)
         {
             frame = _videoFrames[0];
-            [_videoFrames removeObjectAtIndex:0];
             _bufferedDuration -= frame.duration;
             
+            // TODO: test
+           
             UIImage *image = [_videoFrames[0] asImage];
             self.view.image = image;
             
-            NSLog(@"bufferdDuration2:%lf", _bufferedDuration);
+            
+            // 进度
+            _position = frame.position;
+            
+            [_videoFrames removeObjectAtIndex:0];
+            //NSLog(@"bufferdDuration2:%lf", _bufferedDuration);
         }
     }
 }
@@ -167,7 +177,7 @@
     [self decodeFrame];
     
     // 循环
-    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC);
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 1/50.0 * NSEC_PER_SEC);
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
         [self tick];
     });
@@ -186,7 +196,7 @@
 - (void)stop
 {
     _status = kWBVideoPlayerStatusStopped;
-    [_decoder close];
+    //[_decoder close];
 }
 
 - (void)seekToPosition:(CGFloat)position

@@ -121,6 +121,29 @@ static int interrupt_callback(void *ctx)
 
 #pragma mark - Getters and Setters
 
+- (CGFloat)startTime
+{
+    // 优先使用视频的
+    if (self.validVideo) {
+        
+        AVStream *st = _formatCtx->streams[_videoStream];
+        if (AV_NOPTS_VALUE != st->start_time)
+            return st->start_time * _videoTimeBase;
+        return 0;
+    }
+    
+    // 其次使用音频的
+    if (self.validAudio) {
+        
+        AVStream *st = _formatCtx->streams[_audioStream];
+        if (AV_NOPTS_VALUE != st->start_time)
+            return st->start_time * _audioTimeBase;
+        return 0;
+    }
+    
+    return 0;
+}
+
 - (CGFloat)duration
 {
     if (!_formatCtx)
@@ -404,8 +427,21 @@ static int interrupt_callback(void *ctx)
                                        PIX_FMT_RGB24,
                                        SWS_FAST_BILINEAR,
                                        NULL, NULL, NULL);
-    
     return _swsContext != NULL;
+}
+
+- (BOOL)setupVideoFrameFormat:(WBVideoFrameFormat) format
+{
+    if (format == kWBVideoFrameFormatYUV &&
+        _videoCodecCtx &&
+        (_videoCodecCtx->pix_fmt == AV_PIX_FMT_YUV420P || _videoCodecCtx->pix_fmt == AV_PIX_FMT_YUVJ420P)) {
+        
+        _videoFrameFormat = kWBVideoFrameFormatYUV;
+        return YES;
+    }
+    
+    _videoFrameFormat = kWBVideoFrameFormatRGB;
+    return _videoFrameFormat == format;
 }
 
 - (WBVideoFrame *) handleVideoFrame

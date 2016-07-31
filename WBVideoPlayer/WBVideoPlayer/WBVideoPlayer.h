@@ -46,6 +46,7 @@ typedef NS_ENUM(NSInteger, WBVideoPlayerStatus) {
 @property (nonatomic, strong) UIImageView *view;
 
 @property (nonatomic, readonly, assign) CGFloat duration;
+@property (nonatomic, readonly, assign) CGFloat position;
 
 - (void)prepareToPlayWithUrl:(NSString *)url;
 

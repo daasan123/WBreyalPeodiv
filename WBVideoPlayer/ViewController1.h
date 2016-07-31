@@ -13,5 +13,8 @@
     IBOutlet UIButton *playBtn;
     IBOutlet UIButton *pauseBtn;
     IBOutlet UISlider *slider;
+    IBOutlet UILabel *positionLabel;
 }
+
+@property (nonatomic, strong) NSString *url;
 @end

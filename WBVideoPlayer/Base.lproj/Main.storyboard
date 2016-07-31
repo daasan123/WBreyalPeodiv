@@ -35,7 +35,7 @@
         <!--View Controller1-->
         <scene sceneID="T4r-eg-ckz">
             <objects>
-                <viewController id="6aM-Yq-q1t" customClass="ViewController1" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ViewController1" id="6aM-Yq-q1t" customClass="ViewController1" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="pXn-xU-k9D"/>
                         <viewControllerLayoutGuide type="bottom" id="n3x-dB-jMy"/>
@@ -57,6 +57,12 @@
                                     <action selector="slider:" destination="6aM-Yq-q1t" eventType="touchUpInside" id="YdS-fT-IyS"/>
                                 </connections>
                             </slider>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AXu-Q3-uJo">
+                                <rect key="frame" x="178" y="115" width="81" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.96470588239999999" green="0.96470588239999999" blue="0.96470588239999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HV4-TJ-chM">
                                 <rect key="frame" x="94" y="115" width="42" height="30"/>
                                 <state key="normal" title="pause"/>
@@ -70,6 +76,7 @@
                     <connections>
                         <outlet property="pauseBtn" destination="HV4-TJ-chM" id="4Wc-oO-OJe"/>
                         <outlet property="playBtn" destination="IWe-Wr-8GZ" id="Jx1-0h-IkO"/>
+                        <outlet property="positionLabel" destination="AXu-Q3-uJo" id="HcQ-kC-Mwu"/>
                         <outlet property="slider" destination="tyw-bh-nWH" id="IEE-qh-60f"/>
                     </connections>
                 </viewController>
