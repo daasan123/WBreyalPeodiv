@@ -60,6 +60,10 @@
         
         [self performSelector:@selector(tick) withObject:nil afterDelay:1.0];
     }
+    else if (event == kWBVideoPlayerEventPlayEnd)
+    {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
 }
 
 - (void)tick
@@ -86,9 +90,16 @@
     [player pause];
 }
 
+- (IBAction)sliderDown:(id)sender
+{
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(tick) object:nil];
+    [player pause];
+}
+
 - (IBAction)slider:(UISlider *)sender
 {
     [player seekToPosition:sender.value];
+    [self performSelector:@selector(tick) withObject:nil afterDelay:1.0];
 }
 
 - (void)didReceiveMemoryWarning {

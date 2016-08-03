@@ -159,6 +159,16 @@
             
             [_videoFrames removeObjectAtIndex:0];
             //NSLog(@"bufferdDuration2:%lf", _bufferedDuration);
+            
+            // 检查结束
+            if (_position >= self.duration)
+            {
+                if ([_delegate respondsToSelector:@selector(wbVideoPlayerCallbackWithEvent:)])
+                {
+                    _status = kWBVideoPlayerStatusPlayEnd;
+                    [_delegate wbVideoPlayerCallbackWithEvent:kWBVideoPlayerEventPlayEnd];
+                }
+            }
         }
     }
 }
@@ -199,9 +209,28 @@
     //[_decoder close];
 }
 
+- (void)freeBuffers
+{
+    @synchronized(_videoFrames) {
+        [_videoFrames removeAllObjects];
+    }
+    _bufferedDuration = 0;
+}
 - (void)seekToPosition:(CGFloat)position
 {
-    _decoder.position = position;
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(_taskQueue, ^{
+        __strong typeof(self) strongSelf = weakSelf;
+        [strongSelf pause];
+        
+        [strongSelf freeBuffers];
+        
+        _decoder.position = position;
+        _position = _decoder.position;
+        
+        [strongSelf resume];
+    });
+    
 }
 
 - (void)dealloc

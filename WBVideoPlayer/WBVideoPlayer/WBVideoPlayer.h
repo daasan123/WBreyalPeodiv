@@ -29,6 +29,7 @@ typedef NS_ENUM(NSInteger, WBVideoPlayerStatus) {
     kWBVideoPlayerStatusPaused,
     kWBVideoPlayerStatusSeeking,
     kWBVideoPlayerStatusBufferring,
+    kWBVideoPlayerStatusPlayEnd,
     kWBVideoPlayerStatusStopped,
 };
 

@@ -55,6 +55,7 @@
                                 <rect key="frame" x="18" y="77" width="243" height="31"/>
                                 <connections>
                                     <action selector="slider:" destination="6aM-Yq-q1t" eventType="touchUpInside" id="YdS-fT-IyS"/>
+                                    <action selector="sliderDown:" destination="6aM-Yq-q1t" eventType="touchDown" id="aIK-Zy-j87"/>
                                 </connections>
                             </slider>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AXu-Q3-uJo">
