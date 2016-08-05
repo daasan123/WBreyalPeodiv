@@ -230,7 +230,7 @@ static int interrupt_callback(void *ctx)
     if (!url)
     {
         WBVPLog(@"open video failed: url nil");
-        return mediaErrorWithCode(kxMoveiErrorBadUrl);
+        return mediaErrorWithCode(kWBMediaErrorBadUrl);
     }
     
     if (_formatCtx)
@@ -253,18 +253,18 @@ static int interrupt_callback(void *ctx)
     _path = url;
     
     // 获取上下文
-    kxMovieError errCode = [self openInput: _path];
+    WBMediaError errCode = [self openInput: _path];
     
     // 打开流
-    if (errCode == kxMovieErrorNone)
+    if (errCode == kWBMediaErrorNone)
     {
-        kxMovieError videoErr = [self openVideoStream];
-        kxMovieError audioErr = [self openAudioStream];
+        WBMediaError videoErr = [self openVideoStream];
+        WBMediaError audioErr = [self openAudioStream];
         
         _subtitleStream = -1;
         
-        if (videoErr != kxMovieErrorNone &&
-            audioErr != kxMovieErrorNone) {
+        if (videoErr != kWBMediaErrorNone &&
+            audioErr != kWBMediaErrorNone) {
             
             errCode = videoErr; // both fails
             
@@ -275,7 +275,7 @@ static int interrupt_callback(void *ctx)
 
     }
     // 报错
-    if (errCode != kxMovieErrorNone)
+    if (errCode != kWBMediaErrorNone)
     {
         [self close];
         return mediaErrorWithCode(errCode);
@@ -297,9 +297,9 @@ static int interrupt_callback(void *ctx)
     return streamIndexArray;
 }
 
-- (kxMovieError) openVideoStream
+- (WBMediaError) openVideoStream
 {
-    kxMovieError errCode = kxMovieErrorStreamNotFound;
+    WBMediaError errCode = kWBMediaErrorStreamNotFound;
     _videoStream = -1;
     _artworkStream = -1;
     _videoStreams = [self collectStreams:_formatCtx forMediaType:AVMEDIA_TYPE_VIDEO];
@@ -311,7 +311,7 @@ static int interrupt_callback(void *ctx)
         {
             _videoStream = videoIndexInt;
             errCode = [self openVideoStreamWithIndex:_videoStream];
-            if (kxMovieErrorNone == errCode)
+            if (kWBMediaErrorNone == errCode)
             {
                 break;
             }
@@ -324,7 +324,7 @@ static int interrupt_callback(void *ctx)
     return errCode;
 }
 
-- (kxMovieError)openVideoStreamWithIndex:(NSUInteger)videoStream
+- (WBMediaError)openVideoStreamWithIndex:(NSUInteger)videoStream
 {
     // get a pointer to the codec context for the video stream
     AVCodecContext *codecCtx = _formatCtx->streams[videoStream]->codec;
@@ -332,7 +332,7 @@ static int interrupt_callback(void *ctx)
     // find the decoder for the video stream
     AVCodec *codec = avcodec_find_decoder(codecCtx->codec_id);
     if (!codec)
-        return kxMovieErrorCodecNotFound;
+        return kWBMediaErrorCodecNotFound;
     
     // inform the codec that we can handle truncated bitstreams -- i.e.,
     // bitstreams where frame boundaries can fall in the middle of packets
@@ -341,13 +341,13 @@ static int interrupt_callback(void *ctx)
     
     // open codec
     if (avcodec_open2(codecCtx, codec, NULL) < 0)
-        return kxMovieErrorOpenCodec;
+        return kWBMediaErrorOpenCodec;
     
     _videoFrame = av_frame_alloc();
     
     if (!_videoFrame) {
         avcodec_close(codecCtx);
-        return kxMovieErrorAllocateFrame;
+        return kWBMediaErrorAllocateFrame;
     }
     
     _videoStream = videoStream;
@@ -367,21 +367,21 @@ static int interrupt_callback(void *ctx)
     WBVPLog(@"video start time %f", st->start_time * _videoTimeBase);
     WBVPLog(@"video disposition %d", st->disposition);
     
-    return kxMovieErrorNone;
+    return kWBMediaErrorNone;
 }
-- (kxMovieError) openAudioStream
+- (WBMediaError) openAudioStream
 {
     return 0;
 }
 
-- (kxMovieError) openInput: (NSString *) path
+- (WBMediaError) openInput: (NSString *) path
 {
     AVFormatContext *formatCtx = NULL;
     if (_interruptCallback) {
         
         formatCtx = avformat_alloc_context();
         if (!formatCtx)
-            return kxMovieErrorOpenFile;
+            return kWBMediaErrorOpenFile;
         
         AVIOInterruptCB cb = {interrupt_callback, (__bridge void *)(self)};
         formatCtx->interrupt_callback = cb;
@@ -391,19 +391,19 @@ static int interrupt_callback(void *ctx)
         
         if (formatCtx)
             avformat_free_context(formatCtx);
-        return kxMovieErrorOpenFile;
+        return kWBMediaErrorOpenFile;
     }
     
     if (avformat_find_stream_info(formatCtx, NULL) < 0) {
         
         avformat_close_input(&formatCtx);
-        return kxMovieErrorStreamInfoNotFound;
+        return kWBMediaErrorStreamInfoNotFound;
     }
     
     av_dump_format(formatCtx, 0, [path.lastPathComponent cStringUsingEncoding: NSUTF8StringEncoding], false);
     
     _formatCtx = formatCtx;
-    return kxMovieErrorNone;
+    return kWBMediaErrorNone;
 }
 
 - (BOOL) setupScaler

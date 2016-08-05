@@ -13,59 +13,59 @@
 
 typedef enum {
     
-    kxMovieErrorNone,
-    kxMoveiErrorBadUrl,
-    kxMovieErrorOpenFile,
-    kxMovieErrorStreamInfoNotFound,
-    kxMovieErrorStreamNotFound,
-    kxMovieErrorCodecNotFound,
-    kxMovieErrorOpenCodec,
-    kxMovieErrorAllocateFrame,
-    kxMovieErroSetupScaler,
-    kxMovieErroReSampler,
-    kxMovieErroUnsupported,
+    kWBMediaErrorNone,
+    kWBMediaErrorBadUrl,
+    kWBMediaErrorOpenFile,
+    kWBMediaErrorStreamInfoNotFound,
+    kWBMediaErrorStreamNotFound,
+    kWBMediaErrorCodecNotFound,
+    kWBMediaErrorOpenCodec,
+    kWBMediaErrorAllocateFrame,
+    kWBMediaErroSetupScaler,
+    kWBMediaErroReSampler,
+    kWBMediaErroUnsupported,
     
-} kxMovieError;
+} WBMediaError;
 
-//NSString * const kxmovieErrorDomain = @"com.wubing.WBVideoPlayer";
+//NSString * const WBMediaErrorDomain = @"com.wubing.WBVideoPlayer";
 
-static NSString * errorMessage (kxMovieError errorCode)
+static NSString * errorMessage (WBMediaError errorCode)
 {
     switch (errorCode) {
-        case kxMovieErrorNone:
+        case kWBMediaErrorNone:
             return @"";
-        case kxMoveiErrorBadUrl:
+        case kWBMediaErrorBadUrl:
             return NSLocalizedString(@"bad url", nil);
-        case kxMovieErrorOpenFile:
+        case kWBMediaErrorOpenFile:
             return NSLocalizedString(@"Unable to open file", nil);
             
-        case kxMovieErrorStreamInfoNotFound:
+        case kWBMediaErrorStreamInfoNotFound:
             return NSLocalizedString(@"Unable to find stream information", nil);
             
-        case kxMovieErrorStreamNotFound:
+        case kWBMediaErrorStreamNotFound:
             return NSLocalizedString(@"Unable to find stream", nil);
             
-        case kxMovieErrorCodecNotFound:
+        case kWBMediaErrorCodecNotFound:
             return NSLocalizedString(@"Unable to find codec", nil);
             
-        case kxMovieErrorOpenCodec:
+        case kWBMediaErrorOpenCodec:
             return NSLocalizedString(@"Unable to open codec", nil);
             
-        case kxMovieErrorAllocateFrame:
+        case kWBMediaErrorAllocateFrame:
             return NSLocalizedString(@"Unable to allocate frame", nil);
             
-        case kxMovieErroSetupScaler:
+        case kWBMediaErroSetupScaler:
             return NSLocalizedString(@"Unable to setup scaler", nil);
             
-        case kxMovieErroReSampler:
+        case kWBMediaErroReSampler:
             return NSLocalizedString(@"Unable to setup resampler", nil);
             
-        case kxMovieErroUnsupported:
+        case kWBMediaErroUnsupported:
             return NSLocalizedString(@"The ability is not supported", nil);
     }
 }
 
-static NSError * kxmovieError (NSInteger code, id info)
+static NSError * wbMediaError (NSInteger code, id info)
 {
     NSDictionary *userInfo = nil;
     
@@ -83,9 +83,9 @@ static NSError * kxmovieError (NSInteger code, id info)
                            userInfo:userInfo];
 }
 
-static NSError * mediaErrorWithCode(kxMovieError errorCode)
+static NSError * mediaErrorWithCode(WBMediaError errorCode)
 {
-    return kxmovieError(errorCode, errorMessage(errorCode));
+    return wbMediaError(errorCode, errorMessage(errorCode));
 }
 
 #pragma mark - Utility
