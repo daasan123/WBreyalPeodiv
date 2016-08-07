@@ -7,6 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "WBVideoGLRenderer.h"
+
+enum {
+    ATTRIBUTE_VERTEX,
+   	ATTRIBUTE_TEXCOORD,
+};
 
 @class WBVideoFrame;
 @class WBVideoDecoder;
