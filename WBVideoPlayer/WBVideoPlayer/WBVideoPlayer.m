@@ -20,9 +20,18 @@
     CGFloat             _maxBufferedDuration;
     
     BOOL                _isDecoding;
+    
+    UIImageView         *_imageView;
+    WBVideoGLView       *_glView;
 }
 
 #pragma mark - LifeCycle
+
+- (UIView *)view
+{
+    return _glView ? : _imageView;
+}
+
 - (instancetype)init
 {
     self = [super init];
@@ -56,6 +65,9 @@
     }
     else
     {
+        // 初始化显示视图（glView or imageView)
+        [self setupRenderView];
+        
         if ([_delegate respondsToSelector:@selector(wbVideoPlayerCallbackWithEvent:)])
         {
             [_delegate wbVideoPlayerCallbackWithEvent:kWBVideoPlayerEventPrepared];
@@ -128,7 +140,7 @@
      _status = kWBVideoPlayerStatusPlaying;
     
     // test
-     [_decoder setupVideoFrameFormat:kWBVideoFrameFormatRGB];
+     //[_decoder setupVideoFrameFormat:kWBVideoFrameFormatRGB];
     
     [self decodeFrame];
     
@@ -136,6 +148,21 @@
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
         [self tick];
     });
+}
+
+- (void)setupRenderView
+{
+    if (_decoder.validVideo)
+    {
+        _glView = [[WBVideoGLView alloc] initWithFrame:_frame decoder:_decoder];
+    }
+    
+    if (!_glView)
+    {
+        [_decoder setupVideoFrameFormat:kWBVideoFrameFormatRGB];
+        _imageView = [[UIImageView alloc] initWithFrame:_frame];
+        _imageView.backgroundColor = [UIColor blackColor];
+    }
 }
 
 - (void)renderFrame
@@ -149,10 +176,14 @@
             _bufferedDuration -= frame.duration;
             
             // TODO: test
-           
-            UIImage *image = [_videoFrames[0] asImage];
-            self.view.image = image;
-            
+            if (_glView)
+            {
+                [_glView render:frame];
+            }
+            else
+            {
+                _imageView.image = [_videoFrames[0] asImage];
+            }
             
             // 进度
             _position = frame.position;

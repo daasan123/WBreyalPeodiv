@@ -20,19 +20,19 @@
 		481624A81D475CDE00A02971 /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 481624A11D475CDE00A02971 /* libavutil.a */; };
 		481624A91D475CDE00A02971 /* libswresample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 481624A21D475CDE00A02971 /* libswresample.a */; };
 		481624AA1D475CDE00A02971 /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 481624A31D475CDE00A02971 /* libswscale.a */; };
-		481624B11D47696C00A02971 /* WBMediaFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 481624B01D47696C00A02971 /* WBMediaFrame.m */; };
-		481624B41D476EB100A02971 /* WBVideoFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 481624B31D476EB100A02971 /* WBVideoFrame.m */; };
-		481624B71D476EC900A02971 /* WBAudioFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 481624B61D476EC900A02971 /* WBAudioFrame.m */; };
-		481624BA1D476F8300A02971 /* WBArtworkFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 481624B91D476F8300A02971 /* WBArtworkFrame.m */; };
-		481624BD1D476F9B00A02971 /* WBSubTitleFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 481624BC1D476F9B00A02971 /* WBSubTitleFrame.m */; };
 		481624C01D48B4F900A02971 /* WBVideoPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 481624BF1D48B4F900A02971 /* WBVideoPlayer.m */; };
 		481625021D4C75AE00A02971 /* ViewController1.m in Sources */ = {isa = PBXBuildFile; fileRef = 481625011D4C75AE00A02971 /* ViewController1.m */; };
+		48BB400B1D5864CA00FBAE85 /* WBVideoGLRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 48BB400A1D5864CA00FBAE85 /* WBVideoGLRenderer.m */; };
+		48BB40191D5864D900FBAE85 /* WBArtworkFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 48BB400E1D5864D900FBAE85 /* WBArtworkFrame.m */; };
+		48BB401A1D5864D900FBAE85 /* WBAudioFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 48BB40101D5864D900FBAE85 /* WBAudioFrame.m */; };
+		48BB401B1D5864D900FBAE85 /* WBMediaFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 48BB40121D5864D900FBAE85 /* WBMediaFrame.m */; };
+		48BB401C1D5864D900FBAE85 /* WBSubTitleFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 48BB40141D5864D900FBAE85 /* WBSubTitleFrame.m */; };
+		48BB401D1D5864D900FBAE85 /* WBVideoDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 48BB40161D5864D900FBAE85 /* WBVideoDecoder.m */; };
+		48BB401E1D5864D900FBAE85 /* WBVideoFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 48BB40181D5864D900FBAE85 /* WBVideoFrame.m */; };
 		D01A6A3B1D4799F200E3ADFC /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D01A6A3A1D4799F200E3ADFC /* libz.tbd */; };
 		D01A6A3D1D479A0500E3ADFC /* libbz2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D01A6A3C1D479A0500E3ADFC /* libbz2.tbd */; };
 		D01A6A3F1D479A1400E3ADFC /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D01A6A3E1D479A1400E3ADFC /* libiconv.tbd */; };
 		D01A6A421D479EDF00E3ADFC /* WBVideoPlayerHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = D01A6A411D479EDF00E3ADFC /* WBVideoPlayerHelper.m */; };
-		D055820D1D56D971001EFE27 /* WBVideoGLRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = D055820C1D56D971001EFE27 /* WBVideoGLRenderer.m */; };
-		D05582131D56E64A001EFE27 /* WBVideoDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = D05582101D56E64A001EFE27 /* WBVideoDecoder.m */; };
 		D05582141D56E64A001EFE27 /* WBVideoGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = D05582121D56E64A001EFE27 /* WBVideoGLView.m */; };
 /* End PBXBuildFile section */
 
@@ -146,30 +146,30 @@
 		481624A11D475CDE00A02971 /* libavutil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libavutil.a; sourceTree = "<group>"; };
 		481624A21D475CDE00A02971 /* libswresample.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libswresample.a; sourceTree = "<group>"; };
 		481624A31D475CDE00A02971 /* libswscale.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libswscale.a; sourceTree = "<group>"; };
-		481624AF1D47696C00A02971 /* WBMediaFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBMediaFrame.h; sourceTree = "<group>"; };
-		481624B01D47696C00A02971 /* WBMediaFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBMediaFrame.m; sourceTree = "<group>"; };
-		481624B21D476EB100A02971 /* WBVideoFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBVideoFrame.h; sourceTree = "<group>"; };
-		481624B31D476EB100A02971 /* WBVideoFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBVideoFrame.m; sourceTree = "<group>"; };
-		481624B51D476EC900A02971 /* WBAudioFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBAudioFrame.h; sourceTree = "<group>"; };
-		481624B61D476EC900A02971 /* WBAudioFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBAudioFrame.m; sourceTree = "<group>"; };
-		481624B81D476F8300A02971 /* WBArtworkFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBArtworkFrame.h; sourceTree = "<group>"; };
-		481624B91D476F8300A02971 /* WBArtworkFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBArtworkFrame.m; sourceTree = "<group>"; };
-		481624BB1D476F9B00A02971 /* WBSubTitleFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBSubTitleFrame.h; sourceTree = "<group>"; };
-		481624BC1D476F9B00A02971 /* WBSubTitleFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBSubTitleFrame.m; sourceTree = "<group>"; };
 		481624BE1D48B4F900A02971 /* WBVideoPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBVideoPlayer.h; sourceTree = "<group>"; };
 		481624BF1D48B4F900A02971 /* WBVideoPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBVideoPlayer.m; sourceTree = "<group>"; };
 		481625001D4C75AE00A02971 /* ViewController1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController1.h; sourceTree = "<group>"; };
 		481625011D4C75AE00A02971 /* ViewController1.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController1.m; sourceTree = "<group>"; };
+		48BB40091D5864CA00FBAE85 /* WBVideoGLRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBVideoGLRenderer.h; sourceTree = "<group>"; };
+		48BB400A1D5864CA00FBAE85 /* WBVideoGLRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBVideoGLRenderer.m; sourceTree = "<group>"; };
+		48BB400D1D5864D900FBAE85 /* WBArtworkFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBArtworkFrame.h; sourceTree = "<group>"; };
+		48BB400E1D5864D900FBAE85 /* WBArtworkFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBArtworkFrame.m; sourceTree = "<group>"; };
+		48BB400F1D5864D900FBAE85 /* WBAudioFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBAudioFrame.h; sourceTree = "<group>"; };
+		48BB40101D5864D900FBAE85 /* WBAudioFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBAudioFrame.m; sourceTree = "<group>"; };
+		48BB40111D5864D900FBAE85 /* WBMediaFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBMediaFrame.h; sourceTree = "<group>"; };
+		48BB40121D5864D900FBAE85 /* WBMediaFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBMediaFrame.m; sourceTree = "<group>"; };
+		48BB40131D5864D900FBAE85 /* WBSubTitleFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBSubTitleFrame.h; sourceTree = "<group>"; };
+		48BB40141D5864D900FBAE85 /* WBSubTitleFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBSubTitleFrame.m; sourceTree = "<group>"; };
+		48BB40151D5864D900FBAE85 /* WBVideoDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBVideoDecoder.h; sourceTree = "<group>"; };
+		48BB40161D5864D900FBAE85 /* WBVideoDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBVideoDecoder.m; sourceTree = "<group>"; };
+		48BB40171D5864D900FBAE85 /* WBVideoFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBVideoFrame.h; sourceTree = "<group>"; };
+		48BB40181D5864D900FBAE85 /* WBVideoFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBVideoFrame.m; sourceTree = "<group>"; };
 		D01A6A391D4794CA00E3ADFC /* WBVPLog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WBVPLog.h; sourceTree = "<group>"; };
 		D01A6A3A1D4799F200E3ADFC /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		D01A6A3C1D479A0500E3ADFC /* libbz2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbz2.tbd; path = usr/lib/libbz2.tbd; sourceTree = SDKROOT; };
 		D01A6A3E1D479A1400E3ADFC /* libiconv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.tbd; path = usr/lib/libiconv.tbd; sourceTree = SDKROOT; };
 		D01A6A401D479EDF00E3ADFC /* WBVideoPlayerHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBVideoPlayerHelper.h; sourceTree = "<group>"; };
 		D01A6A411D479EDF00E3ADFC /* WBVideoPlayerHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBVideoPlayerHelper.m; sourceTree = "<group>"; };
-		D055820B1D56D971001EFE27 /* WBVideoGLRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBVideoGLRenderer.h; sourceTree = "<group>"; };
-		D055820C1D56D971001EFE27 /* WBVideoGLRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBVideoGLRenderer.m; sourceTree = "<group>"; };
-		D055820F1D56E64A001EFE27 /* WBVideoDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBVideoDecoder.h; sourceTree = "<group>"; };
-		D05582101D56E64A001EFE27 /* WBVideoDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBVideoDecoder.m; sourceTree = "<group>"; };
 		D05582111D56E64A001EFE27 /* WBVideoGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBVideoGLView.h; sourceTree = "<group>"; };
 		D05582121D56E64A001EFE27 /* WBVideoGLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBVideoGLView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -423,33 +423,41 @@
 		481624AB1D475D6B00A02971 /* WBVideoPlayer */ = {
 			isa = PBXGroup;
 			children = (
+				48BB400C1D5864D900FBAE85 /* WBVideoDecoder */,
 				D055820E1D56E64A001EFE27 /* WBVideoGLView */,
 				D01A6A391D4794CA00E3ADFC /* WBVPLog.h */,
 				481624BE1D48B4F900A02971 /* WBVideoPlayer.h */,
 				481624BF1D48B4F900A02971 /* WBVideoPlayer.m */,
 				D01A6A401D479EDF00E3ADFC /* WBVideoPlayerHelper.h */,
 				D01A6A411D479EDF00E3ADFC /* WBVideoPlayerHelper.m */,
-				D055820B1D56D971001EFE27 /* WBVideoGLRenderer.h */,
-				D055820C1D56D971001EFE27 /* WBVideoGLRenderer.m */,
-				481624AF1D47696C00A02971 /* WBMediaFrame.h */,
-				481624B01D47696C00A02971 /* WBMediaFrame.m */,
-				481624B21D476EB100A02971 /* WBVideoFrame.h */,
-				481624B31D476EB100A02971 /* WBVideoFrame.m */,
-				481624B51D476EC900A02971 /* WBAudioFrame.h */,
-				481624B61D476EC900A02971 /* WBAudioFrame.m */,
-				481624B81D476F8300A02971 /* WBArtworkFrame.h */,
-				481624B91D476F8300A02971 /* WBArtworkFrame.m */,
-				481624BB1D476F9B00A02971 /* WBSubTitleFrame.h */,
-				481624BC1D476F9B00A02971 /* WBSubTitleFrame.m */,
 			);
 			path = WBVideoPlayer;
+			sourceTree = "<group>";
+		};
+		48BB400C1D5864D900FBAE85 /* WBVideoDecoder */ = {
+			isa = PBXGroup;
+			children = (
+				48BB400D1D5864D900FBAE85 /* WBArtworkFrame.h */,
+				48BB400E1D5864D900FBAE85 /* WBArtworkFrame.m */,
+				48BB400F1D5864D900FBAE85 /* WBAudioFrame.h */,
+				48BB40101D5864D900FBAE85 /* WBAudioFrame.m */,
+				48BB40111D5864D900FBAE85 /* WBMediaFrame.h */,
+				48BB40121D5864D900FBAE85 /* WBMediaFrame.m */,
+				48BB40131D5864D900FBAE85 /* WBSubTitleFrame.h */,
+				48BB40141D5864D900FBAE85 /* WBSubTitleFrame.m */,
+				48BB40151D5864D900FBAE85 /* WBVideoDecoder.h */,
+				48BB40161D5864D900FBAE85 /* WBVideoDecoder.m */,
+				48BB40171D5864D900FBAE85 /* WBVideoFrame.h */,
+				48BB40181D5864D900FBAE85 /* WBVideoFrame.m */,
+			);
+			path = WBVideoDecoder;
 			sourceTree = "<group>";
 		};
 		D055820E1D56E64A001EFE27 /* WBVideoGLView */ = {
 			isa = PBXGroup;
 			children = (
-				D055820F1D56E64A001EFE27 /* WBVideoDecoder.h */,
-				D05582101D56E64A001EFE27 /* WBVideoDecoder.m */,
+				48BB40091D5864CA00FBAE85 /* WBVideoGLRenderer.h */,
+				48BB400A1D5864CA00FBAE85 /* WBVideoGLRenderer.m */,
 				D05582111D56E64A001EFE27 /* WBVideoGLView.h */,
 				D05582121D56E64A001EFE27 /* WBVideoGLView.m */,
 			);
@@ -526,19 +534,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				48BB401C1D5864D900FBAE85 /* WBSubTitleFrame.m in Sources */,
+				48BB400B1D5864CA00FBAE85 /* WBVideoGLRenderer.m in Sources */,
 				D05582141D56E64A001EFE27 /* WBVideoGLView.m in Sources */,
-				481624B11D47696C00A02971 /* WBMediaFrame.m in Sources */,
 				481624C01D48B4F900A02971 /* WBVideoPlayer.m in Sources */,
-				D055820D1D56D971001EFE27 /* WBVideoGLRenderer.m in Sources */,
-				481624BA1D476F8300A02971 /* WBArtworkFrame.m in Sources */,
+				48BB40191D5864D900FBAE85 /* WBArtworkFrame.m in Sources */,
 				481624281D475C8F00A02971 /* ViewController.m in Sources */,
+				48BB401E1D5864D900FBAE85 /* WBVideoFrame.m in Sources */,
+				48BB401B1D5864D900FBAE85 /* WBMediaFrame.m in Sources */,
+				48BB401A1D5864D900FBAE85 /* WBAudioFrame.m in Sources */,
 				D01A6A421D479EDF00E3ADFC /* WBVideoPlayerHelper.m in Sources */,
-				481624BD1D476F9B00A02971 /* WBSubTitleFrame.m in Sources */,
+				48BB401D1D5864D900FBAE85 /* WBVideoDecoder.m in Sources */,
 				481624251D475C8F00A02971 /* AppDelegate.m in Sources */,
 				481625021D4C75AE00A02971 /* ViewController1.m in Sources */,
-				D05582131D56E64A001EFE27 /* WBVideoDecoder.m in Sources */,
-				481624B41D476EB100A02971 /* WBVideoFrame.m in Sources */,
-				481624B71D476EC900A02971 /* WBAudioFrame.m in Sources */,
 				481624221D475C8F00A02971 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

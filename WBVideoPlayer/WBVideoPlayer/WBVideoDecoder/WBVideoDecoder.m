@@ -444,7 +444,7 @@ static int interrupt_callback(void *ctx)
     return _videoFrameFormat == format;
 }
 
-- (WBVideoFrame *) handleVideoFrame
+- (WBVideoFrame *)handleVideoFrame
 {
     if (!_videoFrame->data[0])
         return nil;

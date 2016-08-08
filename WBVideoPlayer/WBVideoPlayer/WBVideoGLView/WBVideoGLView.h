@@ -19,9 +19,8 @@ enum {
 
 @interface WBVideoGLView : UIView
 
-- (id) initWithFrame:(CGRect)frame
-             decoder: (WBVideoDecoder *) decoder;
+- (instancetype)initWithFrame:(CGRect)frame decoder:(WBVideoDecoder *)decoder;
 
-- (void) render: (WBVideoFrame *) frame;
+- (void)render:(WBVideoFrame *)frame;
 
 @end

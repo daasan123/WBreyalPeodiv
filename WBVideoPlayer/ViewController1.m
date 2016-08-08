@@ -20,18 +20,19 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
-    [self.view addSubview:imageView];
-    [self.view sendSubviewToBack:imageView];
-    imageView.contentMode = UIViewContentModeScaleAspectFit;
-    imageView.backgroundColor = [UIColor blackColor];
+//    UIImageView *imageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
+//    [self.view addSubview:imageView];
+//    [self.view sendSubviewToBack:imageView];
+//    imageView.contentMode = UIViewContentModeScaleAspectFit;
+//    imageView.backgroundColor = [UIColor blackColor];
     
     
     player = [[WBVideoPlayer alloc] init];
     player.delegate = self;
+    player.frame = CGRectMake(0, 200, self.view.bounds.size.width, self.view.bounds.size.width * 9 / 16.0);
+
     [player prepareToPlayWithUrl:self.url];
-    
-    player.view = imageView;
+    [self.view addSubview:player.view];
     
     
     
