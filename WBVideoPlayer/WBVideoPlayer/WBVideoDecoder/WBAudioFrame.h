@@ -12,5 +12,5 @@
  *  音频帧
  */
 @interface WBAudioFrame : WBMediaFrame
-@property (readonly, nonatomic, strong) NSData *samples;
+@property (nonatomic, strong) NSData *samples;
 @end

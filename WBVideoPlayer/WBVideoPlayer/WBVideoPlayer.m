@@ -14,6 +14,7 @@
     NSString            *_url;
     dispatch_queue_t    _taskQueue;
     NSMutableArray      *_videoFrames;
+    NSMutableArray      *_audioFrames;
     
     CGFloat             _bufferedDuration;
     CGFloat             _minBufferedDuration;
@@ -39,9 +40,13 @@
     {
         _taskQueue  = dispatch_queue_create("DecodeQueue", DISPATCH_QUEUE_SERIAL);
         _videoFrames = [[NSMutableArray alloc] init];
+        _audioFrames = [[NSMutableArray alloc] init];
         
         _minBufferedDuration = 2;
         _maxBufferedDuration = 8;
+        
+        // 音频激活
+        [[WBAudioManager sharedAudioManager] activateAudioSession];
 
     }
     return self;
@@ -111,6 +116,7 @@
         return NO;
     }
     
+    // 视频
     if (_decoder.validVideo)
     {
         @synchronized(_videoFrames)
@@ -123,6 +129,30 @@
                     _bufferedDuration += frame.duration;
                     //NSLog(@"bufferdDuration1:%lf", _bufferedDuration);
 
+                }
+            }
+        }
+    }
+    
+    // 音频
+    if (_decoder.validAudio)
+    {
+        @synchronized(_audioFrames)
+        {
+            for (WBMediaFrame *frame in frames)
+            {
+                if (frame.type == kWBMediaFrameTypeAudio)
+                {
+                    [_audioFrames addObject:frame];
+                    if (!_decoder.validVideo)
+                    {
+                        _bufferedDuration += frame.duration;
+                    }
+                }
+                // TODO: ？
+                else if (frame.type == kWBMediaFrameTypeArtwork)
+                {
+                    self.artworkFrame = (WBArtworkFrame *)frame;
                 }
             }
         }

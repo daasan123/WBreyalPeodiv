@@ -29,6 +29,8 @@
 		48BB401C1D5864D900FBAE85 /* WBSubTitleFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 48BB40141D5864D900FBAE85 /* WBSubTitleFrame.m */; };
 		48BB401D1D5864D900FBAE85 /* WBVideoDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 48BB40161D5864D900FBAE85 /* WBVideoDecoder.m */; };
 		48BB401E1D5864D900FBAE85 /* WBVideoFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 48BB40181D5864D900FBAE85 /* WBVideoFrame.m */; };
+		48BB40221D59C6FD00FBAE85 /* WBAudioManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 48BB40211D59C6FD00FBAE85 /* WBAudioManager.m */; };
+		48BB40251D59CDB500FBAE85 /* WBAudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 48BB40241D59CDB500FBAE85 /* WBAudioPlayer.m */; };
 		D01A6A3B1D4799F200E3ADFC /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D01A6A3A1D4799F200E3ADFC /* libz.tbd */; };
 		D01A6A3D1D479A0500E3ADFC /* libbz2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D01A6A3C1D479A0500E3ADFC /* libbz2.tbd */; };
 		D01A6A3F1D479A1400E3ADFC /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D01A6A3E1D479A1400E3ADFC /* libiconv.tbd */; };
@@ -164,6 +166,10 @@
 		48BB40161D5864D900FBAE85 /* WBVideoDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBVideoDecoder.m; sourceTree = "<group>"; };
 		48BB40171D5864D900FBAE85 /* WBVideoFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBVideoFrame.h; sourceTree = "<group>"; };
 		48BB40181D5864D900FBAE85 /* WBVideoFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBVideoFrame.m; sourceTree = "<group>"; };
+		48BB40201D59C6FD00FBAE85 /* WBAudioManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBAudioManager.h; sourceTree = "<group>"; };
+		48BB40211D59C6FD00FBAE85 /* WBAudioManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBAudioManager.m; sourceTree = "<group>"; };
+		48BB40231D59CDB500FBAE85 /* WBAudioPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBAudioPlayer.h; sourceTree = "<group>"; };
+		48BB40241D59CDB500FBAE85 /* WBAudioPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBAudioPlayer.m; sourceTree = "<group>"; };
 		D01A6A391D4794CA00E3ADFC /* WBVPLog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WBVPLog.h; sourceTree = "<group>"; };
 		D01A6A3A1D4799F200E3ADFC /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		D01A6A3C1D479A0500E3ADFC /* libbz2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbz2.tbd; path = usr/lib/libbz2.tbd; sourceTree = SDKROOT; };
@@ -423,6 +429,7 @@
 		481624AB1D475D6B00A02971 /* WBVideoPlayer */ = {
 			isa = PBXGroup;
 			children = (
+				48BB401F1D59C6E900FBAE85 /* WBAudioManager */,
 				48BB400C1D5864D900FBAE85 /* WBVideoDecoder */,
 				D055820E1D56E64A001EFE27 /* WBVideoGLView */,
 				D01A6A391D4794CA00E3ADFC /* WBVPLog.h */,
@@ -451,6 +458,17 @@
 				48BB40181D5864D900FBAE85 /* WBVideoFrame.m */,
 			);
 			path = WBVideoDecoder;
+			sourceTree = "<group>";
+		};
+		48BB401F1D59C6E900FBAE85 /* WBAudioManager */ = {
+			isa = PBXGroup;
+			children = (
+				48BB40201D59C6FD00FBAE85 /* WBAudioManager.h */,
+				48BB40211D59C6FD00FBAE85 /* WBAudioManager.m */,
+				48BB40231D59CDB500FBAE85 /* WBAudioPlayer.h */,
+				48BB40241D59CDB500FBAE85 /* WBAudioPlayer.m */,
+			);
+			path = WBAudioManager;
 			sourceTree = "<group>";
 		};
 		D055820E1D56E64A001EFE27 /* WBVideoGLView */ = {
@@ -535,6 +553,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				48BB401C1D5864D900FBAE85 /* WBSubTitleFrame.m in Sources */,
+				48BB40221D59C6FD00FBAE85 /* WBAudioManager.m in Sources */,
+				48BB40251D59CDB500FBAE85 /* WBAudioPlayer.m in Sources */,
 				48BB400B1D5864CA00FBAE85 /* WBVideoGLRenderer.m in Sources */,
 				D05582141D56E64A001EFE27 /* WBVideoGLView.m in Sources */,
 				481624C01D48B4F900A02971 /* WBVideoPlayer.m in Sources */,

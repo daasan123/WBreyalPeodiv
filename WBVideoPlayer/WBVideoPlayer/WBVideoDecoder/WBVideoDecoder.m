@@ -15,6 +15,8 @@
 
 #import "WBVideoPlayerHelper.h"
 
+#import "WBAudioPlayer.h"
+
 @implementation WBVideoDecoder
 {
     AVFormatContext     *_formatCtx;
@@ -48,6 +50,17 @@
     WBVideoFrameFormat  _videoFrameFormat;
     NSUInteger          _artworkStream;
     NSInteger           _subtitleASSEvents;
+}
+
+static BOOL audioCodecIsSupported(AVCodecContext *audio)
+{
+    if (audio->sample_fmt == AV_SAMPLE_FMT_S16) {
+        
+        id<WBAudioPlayerProtocol> audioManager = [WBAudioManager sharedAudioManager];
+        return  (int)audioManager.samplingRate == audio->sample_rate &&
+        audioManager.numOutputChannels == audio->channels;
+    }
+    return NO;
 }
 
 static NSData * copyFrameData(UInt8 *src, int linesize, int width, int height)
@@ -371,7 +384,78 @@ static int interrupt_callback(void *ctx)
 }
 - (WBMediaError) openAudioStream
 {
-    return 0;
+    WBMediaError errCode = kWBMediaErrorStreamNotFound;
+    _audioStream = -1;
+    _audioStreams = [self collectStreams:_formatCtx forMediaType:AVMEDIA_TYPE_AUDIO];
+    for (NSNumber *n in _audioStreams) {
+        
+        errCode = [self openAudioStreamWithIndex:n.integerValue];
+        if (errCode == kWBMediaErrorNone)
+            break;
+    }
+    return errCode;
+}
+
+- (WBMediaError)openAudioStreamWithIndex:(NSUInteger)audioStream
+{
+    AVCodecContext *codecCtx = _formatCtx->streams[audioStream]->codec;
+    SwrContext *swrContext = NULL;
+    
+    AVCodec *codec = avcodec_find_decoder(codecCtx->codec_id);
+    if(!codec)
+        return kWBMediaErrorCodecNotFound;
+    
+    if (avcodec_open2(codecCtx, codec, NULL) < 0)
+        return kWBMediaErrorOpenCodec;
+    
+    if (!audioCodecIsSupported(codecCtx)) {
+        
+        id<WBAudioPlayerProtocol> audioManager = [WBAudioManager sharedAudioManager];
+        swrContext = swr_alloc_set_opts(NULL,
+                                        av_get_default_channel_layout(audioManager.numOutputChannels),
+                                        AV_SAMPLE_FMT_S16,
+                                        audioManager.samplingRate,
+                                        av_get_default_channel_layout(codecCtx->channels),
+                                        codecCtx->sample_fmt,
+                                        codecCtx->sample_rate,
+                                        0,
+                                        NULL);
+        
+        if (!swrContext ||
+            swr_init(swrContext)) {
+            
+            if (swrContext)
+                swr_free(&swrContext);
+            avcodec_close(codecCtx);
+            
+            return kWBMediaErroReSampler;
+        }
+    }
+    
+    _audioFrame = av_frame_alloc();
+    
+    if (!_audioFrame) {
+        if (swrContext)
+            swr_free(&swrContext);
+        avcodec_close(codecCtx);
+        return kWBMediaErrorAllocateFrame;
+    }
+    
+    _audioStream = audioStream;
+    _audioCodecCtx = codecCtx;
+    _swrContext = swrContext;
+    
+    AVStream *st = _formatCtx->streams[_audioStream];
+    avStreamFPSTimeBase(st, 0.025, 0, &_audioTimeBase);
+    
+    WBVPLog(@"audio codec smr: %.d fmt: %d chn: %d tb: %f %@",
+                _audioCodecCtx->sample_rate,
+                _audioCodecCtx->sample_fmt,
+                _audioCodecCtx->channels,
+                _audioTimeBase,
+                _swrContext ? @"resample" : @"");
+    
+    return kWBMediaErrorNone;
 }
 
 - (WBMediaError) openInput: (NSString *) path
@@ -529,6 +613,93 @@ static int interrupt_callback(void *ctx)
     return frame;
 }
 
+- (WBAudioFrame *)handleAudioFrame
+{
+    if (!_audioFrame->data[0])
+        return nil;
+    
+    id<WBAudioPlayerProtocol> audioManager = [WBAudioManager sharedAudioManager];
+    
+    const NSUInteger numChannels = audioManager.numOutputChannels;
+    NSInteger numFrames;
+    
+    void * audioData;
+    
+    if (_swrContext) {
+        
+        const NSUInteger ratio = MAX(1, audioManager.samplingRate / _audioCodecCtx->sample_rate) *
+        MAX(1, audioManager.numOutputChannels / _audioCodecCtx->channels) * 2;
+        
+        const int bufSize = av_samples_get_buffer_size(NULL,
+                                                       audioManager.numOutputChannels,
+                                                       _audioFrame->nb_samples * ratio,
+                                                       AV_SAMPLE_FMT_S16,
+                                                       1);
+        
+        if (!_swrBuffer || _swrBufferSize < bufSize) {
+            _swrBufferSize = bufSize;
+            _swrBuffer = realloc(_swrBuffer, _swrBufferSize);
+        }
+        
+        Byte *outbuf[2] = { _swrBuffer, 0 };
+        
+        numFrames = swr_convert(_swrContext,
+                                outbuf,
+                                _audioFrame->nb_samples * ratio,
+                                (const uint8_t **)_audioFrame->data,
+                                _audioFrame->nb_samples);
+        
+        if (numFrames < 0) {
+            WBVPLog(@"fail resample audio");
+            return nil;
+        }
+        
+        //int64_t delay = swr_get_delay(_swrContext, audioManager.samplingRate);
+        //if (delay > 0)
+        //    LoggerAudio(0, @"resample delay %lld", delay);
+        
+        audioData = _swrBuffer;
+        
+    } else {
+        
+        if (_audioCodecCtx->sample_fmt != AV_SAMPLE_FMT_S16) {
+            NSAssert(false, @"bucheck, audio format is invalid");
+            return nil;
+        }
+        
+        audioData = _audioFrame->data[0];
+        numFrames = _audioFrame->nb_samples;
+    }
+    
+    const NSUInteger numElements = numFrames * numChannels;
+    NSMutableData *data = [NSMutableData dataWithLength:numElements * sizeof(float)];
+    
+    float scale = 1.0 / (float)INT16_MAX ;
+    vDSP_vflt16((SInt16 *)audioData, 1, data.mutableBytes, 1, numElements);
+    vDSP_vsmul(data.mutableBytes, 1, &scale, data.mutableBytes, 1, numElements);
+    
+    WBAudioFrame *frame = [[WBAudioFrame alloc] init];
+    frame.position = av_frame_get_best_effort_timestamp(_audioFrame) * _audioTimeBase;
+    frame.duration = av_frame_get_pkt_duration(_audioFrame) * _audioTimeBase;
+    frame.samples = data;
+    
+    if (frame.duration == 0) {
+        // sometimes ffmpeg can't determine the duration of audio frame
+        // especially of wma/wmv format
+        // so in this case must compute duration
+        frame.duration = frame.samples.length / (sizeof(float) * numChannels * audioManager.samplingRate);
+    }
+    
+#if 0
+    WBVPLog(@"AFD: %.4f %.4f | %.4f ",
+                frame.position,
+                frame.duration,
+                frame.samples.length / (8.0 * 44100.0));
+#endif
+    
+    return frame;
+}
+
 - (NSArray *)decodeFrames:(CGFloat)minDuration
 {
     if ((!self.validVideo && !self.validAudio) || _isDecoding)
@@ -600,7 +771,7 @@ static int interrupt_callback(void *ctx)
             }
             
         }
-        /*
+        
         else if (packet.stream_index == _audioStream) {
             
             int pktSize = packet.size;
@@ -641,7 +812,9 @@ static int interrupt_callback(void *ctx)
                 pktSize -= len;
             }
             
-        } else if (packet.stream_index == _artworkStream) {
+        }
+        /*
+        else if (packet.stream_index == _artworkStream) {
             
             if (packet.size) {
                 

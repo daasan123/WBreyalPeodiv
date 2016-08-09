@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "WBVideoDecoder.h"
 #import "WBVideoGLView.h"
+#import "WBAudioPlayer.h"
 
 typedef NS_ENUM(NSInteger, WBVideoPlayerEvent) {
     kWBVideoPlayerEventUnknwon = 0,
@@ -50,6 +51,8 @@ typedef NS_ENUM(NSInteger, WBVideoPlayerStatus) {
 @property (nonatomic, readonly, assign) CGFloat duration;
 @property (nonatomic, readonly, assign) CGFloat position;
 @property (nonatomic, assign) CGRect frame;
+@property (readwrite, strong) WBArtworkFrame *artworkFrame;
+
 
 - (void)prepareToPlayWithUrl:(NSString *)url;
 
