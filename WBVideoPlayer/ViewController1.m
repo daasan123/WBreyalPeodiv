@@ -25,7 +25,7 @@
 //    [self.view sendSubviewToBack:imageView];
 //    imageView.contentMode = UIViewContentModeScaleAspectFit;
 //    imageView.backgroundColor = [UIColor blackColor];
-    
+
     
     player = [[WBVideoPlayer alloc] init];
     player.delegate = self;

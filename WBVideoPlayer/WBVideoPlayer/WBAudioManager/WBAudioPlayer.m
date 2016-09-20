@@ -150,6 +150,17 @@ LoggerAudio(3, @"%@", dump); \
     return YES;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (self)
+    {
+        _outData = (float *)calloc(MAX_FRAME_SIZE*MAX_CHAN, sizeof(float));
+        _outputVolume = 0.5;
+    }
+    return self;
+}
+
 - (BOOL) setupAudio
 {
     // --- Audio Session Setup ---
